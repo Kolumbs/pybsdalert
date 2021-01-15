@@ -27,13 +27,15 @@ class Disks(BaseAlert):
         self.limit = limit
 
     def max_drive_limit(self):
-        msg = 'Disk space low for:\n'
+        msg = ''
         for line in os.popen('df -P'):
             p = line.split()[4]
             p = p[:-1]
             if p.isdigit() and self.limit < int(p):
                 msg += str(line)
-        self.send_alert(msg)
+        if msg:
+            msg = 'Disk space low for:\n' + msg
+            self.send_alert(msg)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Monitors BSD system and emails alerts on triggers')
