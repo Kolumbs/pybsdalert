@@ -16,7 +16,7 @@ class BaseAlert():
         msg['From'] = 'alert@' + os.uname().nodename 
         msg['To'] = self.recv
         msg.set_content(alert)
-        with smtplib.SMTP() as mail:
+        with smtplib.SMTP(host='localhost') as mail:
             mail.send_message(msg,msg['From'],self.recv)
 
 class Disks(BaseAlert):
@@ -35,10 +35,10 @@ class Disks(BaseAlert):
                 msg += str(line)
         self.send_alert(msg)
 
-
-parser = argparse.ArgumentParser(description='Monitors BSD system and emails alerts on triggers')
-parser.add_argument('receiver', help='email of receiver')
-parser.add_argument('limit', type=int, help='integer limit of which above disk space will be alerted')
-args = parser.parse_args()
-disk = Disks(args.receiver, args.limit)
-disk.max_drive_limit()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Monitors BSD system and emails alerts on triggers')
+    parser.add_argument('receiver', help='email of receiver')
+    parser.add_argument('limit', type=int, help='integer limit of which above disk space will be alerted')
+    args = parser.parse_args()
+    disk = Disks(args.receiver, args.limit)
+    disk.max_drive_limit()
